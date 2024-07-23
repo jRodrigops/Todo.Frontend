@@ -1,6 +1,6 @@
 import { CirclePlus } from "lucide-react";
 import { useState } from "react";
-import { Tasks } from "./components/tasks";
+import { TaskProps, Tasks } from "./components/tasks";
 import { ListEmpty } from "./components/list-empty";
 
 export interface Task{
@@ -13,6 +13,10 @@ export function App() {
 
   const [tasks, setTasks] = useState<Task[]>([])
   const [inputValue, setInputValue] = useState('');
+  
+  const handleUpdateTask = (updatedTask: TaskProps) => {
+    setTasks(tasks.map(task => (task.id === updatedTask.id ? updatedTask : task)));
+  };
 
   function handleAddTask(){
     if(!inputValue){
@@ -39,9 +43,8 @@ export function App() {
     setTasks(filteredTasks)
   }
 
-  function handleCheckTask(){
-
-  }
+  const filteredTasks = tasks.filter((tasks) => tasks.isChecked ==true)
+  const taskCompleted = filteredTasks.length
 
   return (
     <>
@@ -72,11 +75,11 @@ export function App() {
         <div className=" justify-around flex items-center -space-x-[684px]">
             <div className="space-x-1 flex items-center">
               <span className="text-blue font-bold">Tarefas Criadas</span>
-              <span className="rounded-full bg-gray-300 text-gray-200 px-2 font-bold text-sm">{tasks.length} </span>
+              <span className="rounded-full bg-gray-300 text-gray-200 px-2 font-bold text-sm">{tasks.length}</span>
             </div>
             <div className="space-x-1 flex items-center">
               <span className="text-purple font-bold ">Concluidas</span>
-              <span className="rounded-full bg-gray-300 text-gray-200 px-2 font-bold text-sm">0</span>
+              <span className="rounded-full bg-gray-300 text-gray-200 px-2 font-bold text-sm">{taskCompleted} de {tasks.length}</span>
             </div>
         </div>
 
@@ -84,7 +87,7 @@ export function App() {
 
         <div className="space-y-16">
           <div className="flex items-center justify-center">
-            {tasks.length > 0 ? (<Tasks tasks={tasks} onRemoveTask={handleRemoveTask}/>) : (<ListEmpty />)}
+            {tasks.length > 0 ? (<Tasks tasks={tasks} onRemoveTask={handleRemoveTask} onChangeTask={handleUpdateTask}/>) : (<ListEmpty />)}
           </div>
         </div>
       </div>
